@@ -1,11 +1,5 @@
-<cfset rs = request.requestState>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Bricks Website</title>
-	</head>
-	<body>
-		<cfinclude template="#rs.messageTemplatePath#">
-		<cfinclude template="#rs.viewTemplatePath#">
-	</body>
-</html>
+<cfsilent>
+	<cfset rs = request.requestState />
+	<cfset html = rs.renderer.renderPage(rs) />
+</cfsilent>
+<cfoutput>#html#</cfoutput>

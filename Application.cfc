@@ -9,5 +9,6 @@
 	<cfset this.mainHandler = "main">
 	<cfset this.defaultEvent = "home">
 	<cfset this.defaultLayout = "main">
+	<cfset this.configDoc = "config/config.xml.cfm">
 
 </cfcomponent>
