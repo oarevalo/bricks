@@ -1,35 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<page>
-	<title>Bricks 0.1</title>
-	<layout>
-		<!-- full width header -->
-		<location name="top" type="top" />
-
-		<!-- content header -->
-		<location name="content_top" type="content_top" />
-
-		<!-- first row of content 2/3rds - 1/3rd split -->
-		<location name="row_1_1" type="content_row_1" class="span8" />
-		<location name="row_1_2" type="content_row_1" class="span4" />
-
-		<!-- second row of content 3/3rds split -->
-		<location name="row_2_1" type="content_row_2" class="span4" />
-		<location name="row_2_2" type="content_row_2" class="span4" />
-		<location name="row_2_3" type="content_row_2" class="span4" />
-
-		<!-- content footer -->
-		<location name="content_bottom" type="content_bottom" />
-
-		<!-- full width footer -->
-		<location name="bottom" type="bottom" />
-	</layout>
-	<style>
-		body {margin-top:10px;}
-		.block {margin-bottom:10px;padding:5px;}
-	</style>
+<page extends="base">
 	<body>
-		<navBar location="content_top" pages="|,Home,About,Documentation" title="Bricks" />
-		
 		<text title="Welcome To Bricks!" value="This is a big hero unit." location="content_top" moduleTemplate="hero" />
 	
 		<text value="aaa" title="This is Block 1" location="row_1_1" style="border:1px solid green;" class="block" />
@@ -38,7 +9,5 @@
 		<text value="ccc" title="This is Block 3" location="row_2_1" style="border:1px solid blue;" class="block" />
 		<text value="ddd" title="This is Block 4" location="row_2_2" style="border:1px solid purple;" class="block" />
 		<text value="eee" title="This is Block 5" location="row_2_3" style="border:1px solid black;" class="block" />
-		
-		<text value="https://github.com/oarevalo/bricks" href="https://github.com/oarevalo/bricks" location="content_bottom" moduleTemplate="footer" />
 	</body>
 </page>

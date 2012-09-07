@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page extends="base">
+	<title>Bricks :: {path}</title>
+	<body>
+		<content resourceID="{resourceID}" 
+						location="row_1_1" 
+						class="block" />
+
+		<rss rssurl="http://news.ycombinator.com/rss" 
+				location="row_1_2" 
+				class="block" 
+				readMoreURL="http://news.ycombinator.com/" />
+	</body>
+</page>
