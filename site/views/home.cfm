@@ -1,1 +1,1 @@
-Welcome to Bricks
+<!--- this directory contains  views for custom event handlers --->
