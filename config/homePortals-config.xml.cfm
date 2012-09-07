@@ -9,4 +9,7 @@
 		<renderTemplate name="hero" type="module" href="content/templates/hero.htm" />
 		<renderTemplate name="footer" type="module" href="content/templates/footer.htm" />
 	</renderTemplates>
+	<contentRenderers>
+		<contentRenderer moduleType="navBar" path=".lib.renderers.navBar" />
+	</contentRenderers>
 </homePortals>
