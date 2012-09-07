@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
-	<context name="localhost:8080">
-		<route path="/" page="/" />
-		<route path="/services" resourceType="content" resourcePath="/services" page="/layouts/services" />
+	<context>
+		<!-- Define what we want as the homepage -->
+		<route path="" page="home" />
+		
+		<!-- Define the site structure -->
+		<route path="home" page="home" />
+		<route path="about" page="content" resourceID="about" />
+		<route path="documentation" page="content" resourceID="documentation" />
+		
+		<!-- catch-all rule for all non defined routes -->
+		<noroute page="content" resourceID="404" />
 	</context>
 </routes>
