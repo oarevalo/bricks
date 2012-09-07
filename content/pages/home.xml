@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
 	<title>Bricks 0.1</title>
+	<style>
+		body {margin-top:10px;}
+	</style>
+	<body>
+		<text title="Welcome To Bricks!" value="This is a big hero unit." location="content_row_1" moduleTemplate="hero" />
+	
+		<text value="aaa" title="This is Block 1" class="span4" location="content_row_1" style="border:1px solid black;" />
+		<text value="bbb" title="This is Block 2" class="span4" location="content_row_1" style="border:1px solid black;" />
+		<text value="ccc" title="This is Block 3" class="span4" location="content_row_1" style="border:1px solid black;" />
+
+		<text value="ddd" title="This is Block 4" class="span6" location="content_row_2" style="border:1px solid black;" />
+		<text value="eee" title="This is Block 5" class="span6" location="content_row_2" style="border:1px solid black;" />
+
+		<text value="fff" title="This is Block 6" class="span12" location="content_row_3" style="border:1px solid black;" />
+		
+		<text value="https://github.com/oarevalo/bricks" href="https://github.com/oarevalo/bricks" location="content_bottom" moduleTemplate="footer" />
+	</body>
 </page>
