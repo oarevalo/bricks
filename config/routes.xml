@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+	<context name="localhost:8080">
+		<route path="/" page="/" />
+		<route path="/services" resourceType="content" resourcePath="/services" page="/layouts/services" />
+	</context>
+</routes>

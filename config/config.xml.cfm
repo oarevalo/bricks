@@ -10,9 +10,12 @@
 		
 	<!-- This section describes all services that will be loaded into the application -->
 	<services>
-		<!-- Application service (service layer) -->
 		<service name="homePortals" class="homePortals.components.homePortals">
 			<init-param name="appRoot">$APP_PATH</init-param>
+		</service>
+
+		<service name="routeParser" class="bricks.lib.routeParser">
+			<init-param name="configPath">/bricks/config/routes.xml</init-param>
 		</service>
 	
 		<!-- error reporting service 
