@@ -2,14 +2,15 @@
 
 	<cffunction name="home" output="false">
 		<cfset var route = getValue("page") />
-		<cfset var hp = getService("homePortals") />
-		<cfset var parser = getService("routeParser") />
 
-		<cfset var context = "default" />
-		<cfset var routeInfo = parser.parse(context, route) />
-		
-		<cfset var renderer = hp.loadPage(routeInfo.page) />
-		
+		<!--- parse the current route to obtain which page we need to load --->
+		<cfset var routeInfo = getService("routeParser").parse("default", route) />
+
+		<!--- load the page --->
+		<cfset var renderer = getService("homePortals").loadPage(routeInfo.page) />
+
+		<!--- pass values for rendering --->
+		<cfset setValue("pageParams", routeInfo.params)>
 		<cfset setValue("renderer", renderer) />
 	</cffunction>
 
