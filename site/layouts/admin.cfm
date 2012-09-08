@@ -38,6 +38,7 @@
 		
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="site/views/admin/includes/main.js"></script>
 	</body>
 </html>
 </cfoutput>	
