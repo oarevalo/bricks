@@ -1,6 +1,7 @@
 <cfoutput>
 	<ul class="breadcrumb">
 		<li><i class="icon-home"></i> <a href="index.cfm?event=admin.home">Home</a> <span class="divider">/</span></li>
+		<li>Setup <span class="divider">/</span></li>
 		<li class="active">Routes</li>
 	</ul>
 	<h1>Routes</h1>

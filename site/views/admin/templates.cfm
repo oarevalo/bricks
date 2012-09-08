@@ -1,6 +1,7 @@
 <cfoutput>
 	<ul class="breadcrumb">
 		<li><i class="icon-home"></i> <a href="index.cfm?event=admin.home">Home</a> <span class="divider">/</span></li>
+		<li>Setup <span class="divider">/</span></li>
 		<cfif structKeyExists(rs,"template")>
 			<li><a href="index.cfm?event=admin.templates">Templates</a> <span class="divider">/</span></li>
 			<li class="active">Edit Template</li>
