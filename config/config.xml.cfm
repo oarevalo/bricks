@@ -4,6 +4,7 @@
 		<!-- Bricks settings -->
 		<setting name="bricks.routesConfig" value="/bricks/config/routes.xml" />
 		<setting name="bricks.usersConfig" value="/bricks/config/users.xml.cfm" />
+		<setting name="bricks.resourceLibraryPath" value="/bricks/content/resources/" />
 	
 		<!-- Bug reporting 
 		<setting name="bugLog.emailRecipient" value="" />

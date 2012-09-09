@@ -1,8 +1,5 @@
 <cfcomponent extends="core.eventHandler" output="false">
 
-	<cfset variables.routesFile = "/bricks/config/routes.xml">
-	<cfset variables.resourceLibrarypath = "/bricks/content/resources/">
-
 	<!---- Default View --->
 
 	<cffunction name="home">
@@ -25,7 +22,8 @@
 	<cffunction name="routes">
 		<cfscript>
 			checkLoggedInUser();
-			var fileContent = fileRead(expandPath(variables.routesFile),"utf-8");
+			var routesFile = getSetting("bricks.routesConfig");
+			var fileContent = fileRead(expandPath(routesFile),"utf-8");
 			setValue("fileContent",fileContent);
 			setAdminView("routes");
 		</cfscript>
@@ -227,13 +225,14 @@
 			checkLoggedInUser();
 			
 			try {
+				var routesFile = getSetting("bricks.routesConfig");
 				var content = trim(getValue("editor"));
 				if(content eq "")
 					throw(type="validation", message="Routes definition cannot be empty");
 				if(!isXml(content))
 					throw(type="validation",message="Routes definition has to be a valid XML file");
 					
-				fileWrite(expandPath(variables.routesFile),content,"utf-8");	
+				fileWrite(expandPath(routesFile),content,"utf-8");	
 					
 				setMessage("info", "Routes saved");
 				setNextEvent("admin.routes");
@@ -609,6 +608,7 @@
 			checkLoggedInUser();
 			
 			try {
+				var resourceLibrarypath = getSetting("bricks.resourceLibrarypath");
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name","new_folder"));
 
@@ -620,12 +620,12 @@
 					
 				var tmpName = name;
 				var index = 1;
-				while(directoryExists(variables.resourceLibrarypath & path & tmpName)) {
+				while(directoryExists(resourceLibrarypath & path & tmpName)) {
 					tmpName = name & index;
 					index++;
 				}
 
-				directoryCreate(expandPath(variables.resourceLibrarypath & path & tmpName));
+				directoryCreate(expandPath(resourceLibrarypath & path & tmpName));
 					
 				setMessage("info", "Folder created");
 				setNextEvent("admin.resources","package=#path#&type=#type#");
@@ -646,10 +646,11 @@
 			checkLoggedInUser();
 			
 			try {
+				var resourceLibrarypath = getSetting("bricks.resourceLibrarypath");
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name"));
 
-				directoryDelete(variables.resourceLibrarypath & path & name, true);
+				directoryDelete(resourceLibrarypath & path & name, true);
 					
 				setMessage("info", "Folder deleted");
 				setNextEvent("admin.resources","package=#path#&type=#type#");
@@ -670,11 +671,12 @@
 			checkLoggedInUser();
 			
 			try {
+				var resourceLibrarypath = getSetting("bricks.resourceLibrarypath");
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name"));
 				var newname = trim(getValue("newname"));
 
-				directoryRename(variables.resourceLibrarypath & path & name, variables.resourceLibrarypath & path & newName);
+				directoryRename(resourceLibrarypath & path & name, resourceLibrarypath & path & newName);
 					
 				setMessage("info", "Folder renamed");
 				setNextEvent("admin.resources","package=#path#&type=#type#");
