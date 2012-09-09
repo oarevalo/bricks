@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <config>
 	<settings>
-		<!-- Bug reporting -->
+		<!-- Bricks settings -->
+		<setting name="bricks.routesConfig" value="/bricks/config/routes.xml" />
+		<setting name="bricks.usersConfig" value="/bricks/config/users.xml.cfm" />
+	
+		<!-- Bug reporting 
 		<setting name="bugLog.emailRecipient" value="" />
 		<setting name="bugLog.emailSender" value="" />
 		<setting name="bugLog.listener" value="" />
+		-->
 	</settings>
 
 		
@@ -14,8 +19,12 @@
 			<init-param name="appRoot">$APP_PATH</init-param>
 		</service>
 
-		<service name="routeParser" class="bricks.lib.routeParser">
-			<init-param name="configPath">/bricks/config/routes.xml</init-param>
+		<service name="routeParser" class="bricks.lib.bricks.routeParser">
+			<init-param name="configPath" settingName="bricks.routesConfig" />
+		</service>
+		
+		<service name="userSessionManager" class="bricks.lib.bricks.simpleUserSessionManager">
+			<init-param name="configPath" settingName="bricks.usersConfig" />
 		</service>
 	
 		<!-- error reporting service 

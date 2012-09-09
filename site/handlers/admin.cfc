@@ -6,14 +6,25 @@
 	<!---- Default View --->
 
 	<cffunction name="home">
-		<cfset setNextEvent("admin.routes")>
+		<cfset checkLoggedInUser()>
+		<cfset setAdminView("home")>
 	</cffunction>
 
 
 	<!---- Views --->
+
+	<cffunction name="login">
+		<cfset setAdminView("login")>
+	</cffunction>
+
+	<cffunction name="changePassword">
+		<cfset checkLoggedInUser()>
+		<cfset setAdminView("changePassword")>
+	</cffunction>
 		
 	<cffunction name="routes">
 		<cfscript>
+			checkLoggedInUser();
 			var fileContent = fileRead(expandPath(variables.routesFile),"utf-8");
 			setValue("fileContent",fileContent);
 			setAdminView("routes");
@@ -22,6 +33,8 @@
 	
 	<cffunction name="templates">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var config = getHomePortalsConfigBean();
 			var templates = config.getRenderTemplates();
 			
@@ -46,6 +59,8 @@
 
 	<cffunction name="layouts">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var hp = getService("homePortals");
 			var path = getValue("path");
 			if(path eq "") path="/";
@@ -60,6 +75,8 @@
 
 	<cffunction name="layout">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var hp = getService("homePortals");
 			var path = getValue("path");
 			var name = getValue("name");
@@ -79,6 +96,8 @@
 
 	<cffunction name="resources">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var hp = getService("homePortals");
 			var rlm = hp.getResourceLibraryManager();
 			var resourceTypes = rlm.getResourceTypes();
@@ -105,6 +124,8 @@
 	
 	<cffunction name="resource">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var hp = getService("homePortals");
 			var type = getValue("type");
 			var package = getValue("package");
@@ -128,6 +149,8 @@
 
 	<cffunction name="config">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var configFilePath = getHomePortalsConfigFilePath();
 			var fileContent = fileRead(expandPath(configFilePath),"utf-8");
 			setValue("fileContent",fileContent);
@@ -137,9 +160,72 @@
 	
 	
 	<!--- Actions --->
+
+	<cffunction name="doLogin">
+		<cfscript>
+			try {
+				var usm = getService("userSessionManager");
+				usm.login(getValue("username"), getValue("password"));
+				setNextEvent("admin.home");
+
+			} catch(invalidLoginException e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.login");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.login");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doLogout">
+		<cfscript>
+			try {
+				var usm = getService("userSessionManager");
+				usm.logout();
+				setNextEvent("admin.home");
+
+			} catch(invalidLoginException e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.home");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.home");
+			}
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="doChangePassword">
+		<cfscript>
+			checkLoggedInUser();
+			
+			try {
+				var usm = getService("userSessionManager");
+				if(getValue("newPassword") eq "")
+					throw(type="validation",message="Password cannot be empty");
+				if(getValue("newPassword") neq getValue("newPassword2"))
+					throw(type="validation",message="Passwords do not match");
+				usm.changePassword(getValue("newPassword"));
+				setMessage("info", "Password changed");
+				setNextEvent("admin.home");
+
+			} catch(validation e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.changePassword");
+
+			} catch(lock e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.changePassword");
+			}
+		</cfscript>
+	</cffunction>	
 	
 	<cffunction name="doSaveRoutes">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var content = trim(getValue("editor"));
 				if(content eq "")
@@ -165,6 +251,8 @@
 
 	<cffunction name="doSaveConfig">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var configFilePath = getHomePortalsConfigFilePath();
 				var content = trim(getValue("editor"));
@@ -195,6 +283,8 @@
 	
 	<cffunction name="doSaveTemplate">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var type = getValue("type");
 				var name = getValue("name");
@@ -249,6 +339,8 @@
 	
 	<cffunction name="doDeleteTemplate">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var type = getValue("type");
 				var name = getValue("name");
@@ -292,6 +384,8 @@
 				
 	<cffunction name="doCreateLayoutFolder">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("path"));
 				var name = trim(getValue("name","new_folder"));
@@ -330,6 +424,8 @@
 
 	<cffunction name="doDeleteLayoutFolder">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("path"));
 				var name = trim(getValue("name"));
@@ -354,6 +450,8 @@
 
 	<cffunction name="doRenameLayoutFolder">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("path"));
 				var name = trim(getValue("name"));
@@ -379,6 +477,8 @@
 
 	<cffunction name="doCreateLayout">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("path"));
 				var name = trim(getValue("name","new_page"));
@@ -420,6 +520,8 @@
 
 	<cffunction name="doDeleteLayout">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("path"));
 				var name = trim(getValue("name"));
@@ -444,6 +546,8 @@
 
 	<cffunction name="doSaveLayout">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = getValue("path");
 				var name = getValue("name");
@@ -475,6 +579,8 @@
 	
 	<cffunction name="doRenameLayout">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("path"));
 				var name = trim(getValue("name"));
@@ -500,6 +606,8 @@
 
 	<cffunction name="doCreateResourcePackage">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name","new_folder"));
@@ -535,6 +643,8 @@
 
 	<cffunction name="doDeleteResourcePackage">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name"));
@@ -557,6 +667,8 @@
 
 	<cffunction name="doRenameResourcePackage">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name"));
@@ -580,6 +692,8 @@
 
 	<cffunction name="doSaveResource">
 		<cfscript>
+			checkLoggedInUser();
+			
 			var hp = getService("homePortals");
 			
 			try {
@@ -662,6 +776,8 @@
 	
 	<cffunction name="doDeleteResource">
 		<cfscript>
+			checkLoggedInUser();
+			
 			try {
 				var path = trim(getValue("package"));
 				var type = trim(getValue("type"));
@@ -692,6 +808,14 @@
 
 
 	<!--- Utility Methods --->
+	
+	<cffunction name="checkLoggedInUser" access="private" returnType="void">
+		<cfset var usm = getService("userSessionManager")>
+		<cfif !usm.isLoggedIn()>
+			<cfset setNextEvent("admin.login")>
+		</cfif>
+		<cfset setValue("currentUser", usm.getUser())>
+	</cffunction>
 	
 	<cffunction name="setAdminView" access="private" returntype="void">
 		<cfargument name="viewName" type="string" required="true" />
