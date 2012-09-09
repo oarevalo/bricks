@@ -1,6 +1,7 @@
 <cfcomponent extends="core.eventHandler" output="false">
 
 	<cfset variables.routesFile = "/bricks/config/routes.xml">
+	<cfset variables.resourceLibrarypath = "/bricks/content/resources/">
 
 	<!---- Default View --->
 
@@ -15,8 +16,7 @@
 		<cfscript>
 			var fileContent = fileRead(expandPath(variables.routesFile),"utf-8");
 			setValue("fileContent",fileContent);
-			setLayout("admin");
-			setView("admin/routes");
+			setAdminView("routes");
 		</cfscript>
 	</cffunction>
 	
@@ -40,8 +40,7 @@
 			}
 			
 			setValue("templates",templates);
-			setLayout("admin");
-			setView("admin/templates");
+			setAdminView("templates");
 		</cfscript>
 	</cffunction>
 
@@ -55,8 +54,7 @@
 			
 			setValue("path",path);
 			setValue("qryDir",qryDir);
-			setLayout("admin");
-			setView("admin/layouts");
+			setAdminView("layouts");
 		</cfscript>
 	</cffunction>
 
@@ -75,25 +73,65 @@
 			
 			setValue("page",page);
 			setValue("pageInfo",pageInfo);
-			setLayout("admin");
-			setView("admin/layout");
+			setAdminView("layout");
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="resources">
 		<cfscript>
-			setLayout("admin");
-			setView("admin/resources");
+			var hp = getService("homePortals");
+			var rlm = hp.getResourceLibraryManager();
+			var resourceTypes = rlm.getResourceTypes();
+			if(!arrayLen(resourceTypes)) {
+				setMessage("warning","No resource types have been configured");
+				setNextEvent("admin.home");
+			}
+			var type = getValue("type", resourceTypes[1]);
+			var package = getValue("package");
+			if(package eq "") package="/";
+			
+			var packages = rlm.getResourcePackagesList(type);
+			var resources = rlm.getResourcesInPackage(type,package);
+			var typeInfo = rlm.getResourceTypeInfo(type);
+			
+			setValue("type",type);
+			setValue("package",package);
+			setValue("packages",packages);
+			setValue("resources",resources);
+			setValue("typeInfo",typeInfo);
+			setAdminView("resources");
 		</cfscript>
 	</cffunction>
+	
+	<cffunction name="resource">
+		<cfscript>
+			var hp = getService("homePortals");
+			var type = getValue("type");
+			var package = getValue("package");
+			var id = getValue("id");
+
+			var rlm = hp.getResourceLibraryManager();
+			var resLib = rlm.getResourceLibrary("content/resources");
+			var typeInfo = rlm.getResourceTypeInfo(type);
+			
+			if(id neq "")
+				resBean = resLib.getResource(type, package, id);
+			else
+				resBean = resLib.getNewResource(type);
+			
+			setValue("resBean",resBean);
+			setValue("catalog",hp.getCatalog());
+			setValue("typeInfo",typeInfo);
+			setAdminView("resource");
+		</cfscript>
+	</cffunction>	
 
 	<cffunction name="config">
 		<cfscript>
 			var configFilePath = getHomePortalsConfigFilePath();
 			var fileContent = fileRead(expandPath(configFilePath),"utf-8");
 			setValue("fileContent",fileContent);
-			setLayout("admin");
-			setView("admin/config");
+			setAdminView("config");
 		</cfscript>
 	</cffunction>	
 	
@@ -252,44 +290,6 @@
 		</cfscript>
 	</cffunction>	
 				
-	<cffunction name="doSaveResource">
-		<cfscript>
-			try {
-				throw(message="not implemented");
-				
-				setMessage("info", "Resource saved");
-				setNextEvent("admin.resources");
-
-			} catch(validation e) {
-				setMessage("warning", e.message);
-				setNextEvent("admin.resources");
-
-			} catch(any e) {
-				setMessage("error", e.message);
-				setNextEvent("admin.resources");
-			}
-		</cfscript>
-	</cffunction>		
-	
-	<cffunction name="doDeleteResource">
-		<cfscript>
-			try {
-				throw(message="not implemented");
-				
-				setMessage("info", "Resource deleted");
-				setNextEvent("admin.resources");
-
-			} catch(validation e) {
-				setMessage("warning", e.message);
-				setNextEvent("admin.resources");
-
-			} catch(any e) {
-				setMessage("error", e.message);
-				setNextEvent("admin.resources");
-			}
-		</cfscript>
-	</cffunction>		
-
 	<cffunction name="doCreateLayoutFolder">
 		<cfscript>
 			try {
@@ -404,7 +404,7 @@
 
 				pp.save(path & tmpName, pageBean);
 					
-				setMessage("info", "Folder created");
+				setMessage("info", "Layout page created");
 				setNextEvent("admin.layouts","path=#path#");
 
 			} catch(validation e) {
@@ -428,7 +428,7 @@
 
 				pp.delete(path & name);
 					
-				setMessage("info", "Layout deleted");
+				setMessage("info", "Layout page deleted");
 				setNextEvent("admin.layouts","path=#path#");
 
 			} catch(validation e) {
@@ -498,8 +498,209 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="doCreateResourcePackage">
+		<cfscript>
+			try {
+				var path = trim(getValue("package"));
+				var name = trim(getValue("name","new_folder"));
+
+				if(name eq "")
+					throw(type="validation", message="Folder name cannot be empty");
+
+				if(right(path,1) neq "/")
+					path = path & "/";
+					
+				var tmpName = name;
+				var index = 1;
+				while(directoryExists(variables.resourceLibrarypath & path & tmpName)) {
+					tmpName = name & index;
+					index++;
+				}
+
+				directoryCreate(expandPath(variables.resourceLibrarypath & path & tmpName));
+					
+				setMessage("info", "Folder created");
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(validation e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doDeleteResourcePackage">
+		<cfscript>
+			try {
+				var path = trim(getValue("package"));
+				var name = trim(getValue("name"));
+
+				directoryDelete(variables.resourceLibrarypath & path & name, true);
+					
+				setMessage("info", "Folder deleted");
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(validation e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doRenameResourcePackage">
+		<cfscript>
+			try {
+				var path = trim(getValue("package"));
+				var name = trim(getValue("name"));
+				var newname = trim(getValue("newname"));
+
+				directoryRename(variables.resourceLibrarypath & path & name, variables.resourceLibrarypath & path & newName);
+					
+				setMessage("info", "Folder renamed");
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(validation e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="doSaveResource">
+		<cfscript>
+			var hp = getService("homePortals");
+			
+			try {
+				resType = getValue("type");
+				package = getValue("package");
+				resourceID = getValue("id");
+				isNew = getValue("_isnew",false);
+				resPrefix = "props";
+				
+				// get resource ID
+				if(isNew)
+					resourceID = getValue("_id"); 
+				
+				if(resourceID eq "") {
+					throw(type="validation",message="Resource name/id cannot be empty");
+				}
+				
+				if(isNew) {
+					var rlm = hp.getResourceLibraryManager();
+					var resLib = rlm.getResourceLibrary("content/resources");
+					oResourceBean = resLib.getNewResource(resType);
+					oResourceBean.setID(resourceID);
+					oResourceBean.setPackage(package); 
+				} else {
+					oResourceBean = hp
+									.getCatalog()
+									.getResource(resType, resourceID, true);
+				}
+
+				for(arg in form) {
+					// update resource properties
+					if(left(arg,len(resPrefix)) eq resPrefix
+						and listLast(arg,"_") neq "default") {
+						if(form[arg] eq "_NOVALUE_")
+	   						oResourceBean.setProperty(replaceNoCase(arg,resPrefix & "_",""),"");
+						else
+	   						oResourceBean.setProperty(replaceNoCase(arg,resPrefix & "_",""),form[arg]);
+					}
+				}
+				oResourceBean.getResourceLibrary().saveResource(oResourceBean);
+
+				// update body
+				if(structKeyExists(form, "_filebody")) {
+					oResourceBean.getResourceLibrary().saveResourceFile(oResourceBean, 
+																		form["_filebody"], 
+																		form["_filename"], 
+																		form["_filecontenttype"]);
+				}
+				
+				// upload file
+				if(structKeyExists(form, "_file") and form["_file"] neq "") {
+					pathSeparator =  createObject("java","java.lang.System").getProperty("file.separator");
+					path = getTempFile(getTempDirectory(),"bricksFileUpload");
+					stFileInfo = fileUploadInternal("_file", path);
+					if(not stFileInfo.fileWasSaved)	throw(message="File upload failed",type="failedUpload");
+					path = stFileInfo.serverDirectory & pathSeparator & stFileInfo.serverFile;
+	
+					oResourceBean.getResourceLibrary().addResourceFile(oResourceBean, 
+																		path, 
+																		stFileInfo.clientFile, 
+																		stFileInfo.contentType & "/" & stFileInfo.contentSubType);
+				}
+
+				// reinit homeportals
+				getService("homePortals").reinit();
+
+				setMessage("info", "Resource saved");
+				setNextEvent("admin.resources","type=#restype#&package=#package#");
+
+			} catch(validation e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#id#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#id#");
+			}
+		</cfscript>
+	</cffunction>		
+	
+	<cffunction name="doDeleteResource">
+		<cfscript>
+			try {
+				var path = trim(getValue("package"));
+				var type = trim(getValue("type"));
+				var id = trim(getValue("id"));
+
+				var hp = getService("homePortals");
+				var rlm = hp.getResourceLibraryManager();
+				
+				var resLib = rlm.getResourceLibrary("content/resources");
+				resLib.deleteResource(id, type, path);
+
+				// reinit homeportals
+				getService("homePortals").reinit();
+				
+				setMessage("info", "Resource deleted");
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(validation e) {
+				setMessage("warning", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+
+			} catch(any e) {
+				setMessage("error", e.message);
+				setNextEvent("admin.resources","package=#path#&type=#type#");
+			}
+		</cfscript>
+	</cffunction>		
+
 
 	<!--- Utility Methods --->
+	
+	<cffunction name="setAdminView" access="private" returntype="void">
+		<cfargument name="viewName" type="string" required="true" />
+		<cfset var hp = getService("homePortals") />
+		<cfset var resourceTypes = hp.getResourceLibraryManager().getResourceTypes() />
+		<cfset setValue("resourceTypes", resourceTypes) />		
+		<cfset setView("admin/" & viewName) />
+		<cfset setLayout("admin") />
+	</cffunction>
 	
 	<cffunction name="getHomePortalsConfigBean" access="private" returntype="any">
 		<cfset var configPath = getHomePortalsConfigFilePath()>
@@ -513,5 +714,19 @@
 		<cfset var configPath = hp.getConfigFilePath()>
 		<cfreturn appRoot & configPath>
 	</cffunction>
-	
+
+	<cffunction name="fileUploadInternal" access="private" returntype="struct">
+		<cfargument name="fieldName" type="string" required="true">
+		<cfargument name="destPath" type="string" required="true">
+		
+		<cfset var stFile = structNew()>
+		
+		<cffile action="upload" 
+				filefield="#arguments.fieldName#" 
+				nameconflict="makeunique"  
+				result="stFile"
+				destination="#arguments.destPath#">
+		
+		<cfreturn stFile>
+	</cffunction>		
 </cfcomponent>
