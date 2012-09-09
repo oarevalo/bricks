@@ -32,7 +32,7 @@
 				</cfloop>
 			</ul>
              <ul class="nav pull-right">
-              <li><a href="/bricks" class="navbar-link">Go To Site</a></li>
+              <li><a href="/bricks" class="navbar-link" target="_blank">Go To Site</a></li>
               <li class="dropdown">
                 <a href="##" class="dropdown-toggle" data-toggle="dropdown">Setup <b class="caret"></b></a>
                 <ul class="dropdown-menu">
