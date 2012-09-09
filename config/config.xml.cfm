@@ -3,9 +3,9 @@
 	<settings>
 		<!-- Bricks settings -->
 		<setting name="bricks.appRoot" value="$APP_PATH" />
-		<setting name="bricks.routesConfig" value="/bricks/config/routes.xml" />
-		<setting name="bricks.usersConfig" value="/bricks/config/users.xml.cfm" />
-		<setting name="bricks.resourceLibraryPath" value="/bricks/content/resources/" />
+		<setting name="bricks.routesConfig" value="/bricksApp/config/routes.xml" />
+		<setting name="bricks.usersConfig" value="/bricksApp/config/users.xml.cfm" />
+		<setting name="bricks.resourceLibraryPath" value="/bricksApp/content/resources/" />
 	
 		<!-- Bug reporting 
 		<setting name="bugLog.emailRecipient" value="" />
@@ -21,16 +21,16 @@
 			<init-param name="appRoot">$APP_PATH</init-param>
 		</service>
 
-		<service name="routeParser" class="bricks.lib.bricks.routeParser">
+		<service name="routeParser" class="bricksApp.lib.bricks.routeParser">
 			<init-param name="configPath" settingName="bricks.routesConfig" />
 		</service>
 		
-		<service name="userSessionManager" class="bricks.lib.bricks.simpleUserSessionManager">
+		<service name="userSessionManager" class="bricksApp.lib.bricks.simpleUserSessionManager">
 			<init-param name="configPath" settingName="bricks.usersConfig" />
 		</service>
 	
 		<!-- error reporting service 
-		<service name="bugTracker" class="bricks.components.bugLogService">
+		<service name="bugTracker" class="bricksApp.lib.bricks.bugLogService">
 			<init-param name="bugLogListener" settingName="bugLog.emailRecipient" />
 			<init-param name="bugEmailSender" settingName="bugLog.emailSender" />
 			<init-param name="bugEmailRecipients" settingName="bugLog.listener" />

@@ -1,6 +1,8 @@
 <cfcomponent extends="core.coreApp">
 
-	<cfset this.applicationName = "Bricks Website">
+	<cfset this.applicationName = "bricksApp">
+
+	<cfset this.mappings[ "/bricksApp" ] = getDirectoryFromPath(getcurrentTemplatePath()) />
 
 	<cfset this.paths.core = "/core">
 	<cfset this.dirs.handlers = "site/handlers">
