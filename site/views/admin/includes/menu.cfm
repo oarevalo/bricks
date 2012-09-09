@@ -38,7 +38,7 @@
 			</ul>
 			</cfif>
 			<ul class="nav pull-right">
-				<li><a href="/bricks" class="navbar-link" target="_blank">Go To Site</a></li>
+				<li><a href="#rs.appRoot#" class="navbar-link" target="_blank">Go To Site</a></li>
 				<cfif isLoggedIn>
 	          		<li class="dropdown">
 		                <a href="##" class="dropdown-toggle" data-toggle="dropdown">Setup <b class="caret"></b></a>

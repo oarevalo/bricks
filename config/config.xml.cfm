@@ -2,6 +2,7 @@
 <config>
 	<settings>
 		<!-- Bricks settings -->
+		<setting name="bricks.appRoot" value="$APP_PATH" />
 		<setting name="bricks.routesConfig" value="/bricks/config/routes.xml" />
 		<setting name="bricks.usersConfig" value="/bricks/config/users.xml.cfm" />
 		<setting name="bricks.resourceLibraryPath" value="/bricks/content/resources/" />

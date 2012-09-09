@@ -824,6 +824,7 @@
 		<cfset var hp = getService("homePortals") />
 		<cfset var resourceTypes = hp.getResourceLibraryManager().getResourceTypes() />
 		<cfset setValue("resourceTypes", resourceTypes) />		
+		<cfset setValue("appRoot", getSetting("bricks.appRoot")) />
 		<cfset setView("admin/" & viewName) />
 		<cfset setLayout("admin") />
 	</cffunction>
