@@ -112,6 +112,7 @@
 			var typeInfo = rlm.getResourceTypeInfo(type);
 			
 			setValue("type",type);
+			setValue("typeLabel",getResourceTypeLabel(type));
 			setValue("package",package);
 			setValue("packages",packages);
 			setValue("resources",resources);
@@ -141,6 +142,7 @@
 			setValue("resBean",resBean);
 			setValue("catalog",hp.getCatalog());
 			setValue("typeInfo",typeInfo);
+			setValue("typeLabel",getResourceTypeLabel(type));
 			setAdminView("resource");
 		</cfscript>
 	</cffunction>	
@@ -838,4 +840,20 @@
 		
 		<cfreturn stFile>
 	</cffunction>		
+
+	<cffunction name="getResourceTypeLabel" access="private" returntype="string">
+		<cfargument name="type" required="true" type="string">
+		<cfscript>
+			var rtn = "";
+			switch(type) {
+				case "content": rtn="Content"; break;
+				case "image": rtn="Images"; break;
+				case "feed": rtn="News Feeds"; break;
+				default:
+					rtn = type;
+			}
+			return rtn;
+		</cfscript>
+	</cffunction>
+
 </cfcomponent>

@@ -9,7 +9,7 @@
 <cfoutput>
 	<ul class="breadcrumb">
 		<li><i class="icon-home"></i> <a href="index.cfm?event=admin.home">Home</a> <span class="divider">/</span></li>
-		<li class="active">#rs.type#</li>
+		<li class="active">#rs.typeLabel#</li>
 	</ul>
 
 	<div style="float:right;" class="clearfix">
@@ -17,7 +17,7 @@
 		<a class="btn" href="index.cfm?event=admin.resource&package=#rs.package#&type=#rs.type#&id="><i class="icon-plus"></i> New Resource</a>
 	</div>
 		
-	<h1>#rs.type#</h1>
+	<h1>#rs.typeLabel#</h1>
 
 	<div class="well">
 		<p>#rs.typeInfo.getDescription()#</p>

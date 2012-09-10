@@ -59,7 +59,7 @@
 <cfoutput>
 	<ul class="breadcrumb">
 		<li><i class="icon-home"></i> <a href="index.cfm?event=admin.home">Home</a> <span class="divider">/</span></li>
-		<li><a href="index.cfm?event=admin.resources&package=#rs.package#&type=#rs.type#">#rs.type#</a> <span class="divider">/</span></li>
+		<li><a href="index.cfm?event=admin.resources&package=#rs.package#&type=#rs.type#">#rs.typeLabel#</a> <span class="divider">/</span></li>
 		<li class="active">Add/Edit Resource</li>
 	</ul>
 	<h1>Add/Edit Resource: #titleLabel#</h1>
