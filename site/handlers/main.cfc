@@ -12,6 +12,9 @@
 		<!--- pass values for rendering --->
 		<cfset setValue("pageParams", routeInfo.params)>
 		<cfset setValue("renderer", renderer) />
+		
+		<!--- set the layout that knows how to render homePortals pages --->
+		<cfset setLayout("renderer")>
 	</cffunction>
 
 </cfcomponent>

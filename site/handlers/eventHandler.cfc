@@ -19,4 +19,12 @@
 		<cfset setLayout("admin") />
 	</cffunction>
 
+	<cffunction name="setCustomView" access="private" returntype="void">
+		<cfargument name="viewName" type="string" required="true" />
+		<cfargument name="pageTitle" type="string" required="false" default="" />
+		<cfset setValue("pageTitle", arguments.pageTitle) />		
+		<cfset setView(viewName) />
+		<cfset setLayout("custom") />
+	</cffunction>
+	
 </cfcomponent>

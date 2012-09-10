@@ -18,7 +18,6 @@
 
 <cfset app.mainHandler = "main">
 <cfset app.defaultEvent = "home">
-<cfset app.defaultLayout = "main">
 <cfset app.configDoc = "config/config.xml.cfm">
 
 
