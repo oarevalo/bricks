@@ -1,3 +1,4 @@
+<cfsilent>
 <!---
 	Bricks 
 --->
@@ -9,6 +10,7 @@
 <!--- Framework Settings --->
 <cfset app.paths.core = "/bricksApp/lib/core">
 <cfset app.paths.coreImages = "lib/core/images">
+<cfset app.paths.modules = "/bricksApp/modules">
 
 <cfset app.dirs.handlers = "site/handlers">
 <cfset app.dirs.layouts = "site/layouts">
@@ -25,5 +27,5 @@
 
 
 <!--- Render view --->
-<cfinclude template="lib/core/core.cfm">
+</cfsilent><cfinclude template="lib/core/core.cfm">
 
