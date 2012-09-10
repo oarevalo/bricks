@@ -15,12 +15,12 @@
 			<cfif isLoggedIn>
 			<ul class="nav">
 				<cfloop array="#mainMenu#" index="item">
-					<cfif structKeyExists(item,"paramName") and item.paramName neq "">
+					<cfif structKeyExists(item,"paramName") and structKeyExists(item,"paramValue") and item.paramName neq "">
 						<cfset selected = (item.event eq rs.event and rs[item.paramName] eq item.paramValue)>
 					<cfelse>
 						<cfset selected = (item.event eq rs.event)>
 					</cfif>
-					<cfif structKeyExists(item,"paramName")>
+					<cfif structKeyExists(item,"paramName") and structKeyExists(item,"paramValue")>
 						<cfset href = "index.cfm?event=#item.event#&#item.paramName#=#item.paramValue#">
 					<cfelse>
 						<cfset href = "index.cfm?event=#item.event#">
@@ -36,7 +36,12 @@
 		                <a href="##" class="dropdown-toggle" data-toggle="dropdown">Setup <b class="caret"></b></a>
 		                <ul class="dropdown-menu">
 							<cfloop array="#setupMenu#" index="item">
-								<li><a href="index.cfm?event=#item.event#">#item.label#</a></li>
+								<cfif structKeyExists(item,"paramName") and structKeyExists(item,"paramValue")>
+									<cfset href = "index.cfm?event=#item.event#&#item.paramName#=#item.paramValue#">
+								<cfelse>
+									<cfset href = "index.cfm?event=#item.event#">
+								</cfif>
+								<li><a href="#href#">#item.label#</a></li>
 							</cfloop>
 							<li class="divider"></li>
 							<li><a href="index.cfm?event=admin.changePassword">Change Password</a></li>
