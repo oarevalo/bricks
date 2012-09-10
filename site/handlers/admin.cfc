@@ -1,4 +1,4 @@
-<cfcomponent extends="core.eventHandler" output="false">
+<cfcomponent extends="bricksApp.lib.core.eventHandler" output="false">
 
 	<!---- Default View --->
 

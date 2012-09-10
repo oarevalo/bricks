@@ -1,16 +1,11 @@
-<cfcomponent extends="core.coreApp">
+<cfcomponent>
 
+	<!--- Define application settings --->
 	<cfset this.applicationName = "bricksApp">
+	<cfset this.sessionManagement = true>
 
+	<!--- Create an application-specific mapping so that
+		we can install this app in any directory --->
 	<cfset this.mappings[ "/bricksApp" ] = getDirectoryFromPath(getcurrentTemplatePath()) />
-
-	<cfset this.paths.core = "/core">
-	<cfset this.dirs.handlers = "site/handlers">
-	<cfset this.dirs.layouts = "site/layouts">
-	<cfset this.dirs.views = "site/views">
-	<cfset this.mainHandler = "main">
-	<cfset this.defaultEvent = "home">
-	<cfset this.defaultLayout = "main">
-	<cfset this.configDoc = "config/config.xml.cfm">
 
 </cfcomponent>

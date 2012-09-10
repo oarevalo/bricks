@@ -1,1 +1,29 @@
-<cfinclude template="/core/core.cfm">
+<!---
+	Bricks 
+--->
+
+<!--- create main application controller --->
+<cfset app = createObject("component","bricksApp.lib.core.coreApp") />
+
+
+<!--- Framework Settings --->
+<cfset app.paths.core = "/bricksApp/lib/core">
+<cfset app.paths.coreImages = "lib/core/images">
+
+<cfset app.dirs.handlers = "site/handlers">
+<cfset app.dirs.layouts = "site/layouts">
+<cfset app.dirs.views = "site/views">
+
+<cfset app.mainHandler = "main">
+<cfset app.defaultEvent = "home">
+<cfset app.defaultLayout = "main">
+<cfset app.configDoc = "config/config.xml.cfm">
+
+
+<!--- Invoke controller --->
+<cfset app.onRequestStart()>
+
+
+<!--- Render view --->
+<cfinclude template="lib/core/core.cfm">
+
