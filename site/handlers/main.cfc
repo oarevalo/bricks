@@ -1,4 +1,4 @@
-<cfcomponent extends="bricksApp.lib.core.eventHandler" output="false">
+<cfcomponent extends="eventHandler" output="false">
 
 	<cffunction name="home" output="false">
 		<cfset var route = getValue("page") />

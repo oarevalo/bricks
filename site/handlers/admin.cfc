@@ -1,4 +1,4 @@
-<cfcomponent extends="bricksApp.lib.core.eventHandler" output="false">
+<cfcomponent extends="eventHandler">
 
 	<!---- Default View --->
 
@@ -810,25 +810,7 @@
 
 
 	<!--- Utility Methods --->
-	
-	<cffunction name="checkLoggedInUser" access="private" returnType="void">
-		<cfset var usm = getService("userSessionManager")>
-		<cfif !usm.isLoggedIn()>
-			<cfset setNextEvent("admin.login")>
-		</cfif>
-		<cfset setValue("currentUser", usm.getUser())>
-	</cffunction>
-	
-	<cffunction name="setAdminView" access="private" returntype="void">
-		<cfargument name="viewName" type="string" required="true" />
-		<cfset var hp = getService("homePortals") />
-		<cfset var resourceTypes = hp.getResourceLibraryManager().getResourceTypes() />
-		<cfset setValue("resourceTypes", resourceTypes) />		
-		<cfset setValue("appRoot", getSetting("bricks.appRoot")) />
-		<cfset setView("admin/" & viewName) />
-		<cfset setLayout("admin") />
-	</cffunction>
-	
+		
 	<cffunction name="getHomePortalsConfigBean" access="private" returntype="any">
 		<cfset var configPath = getHomePortalsConfigFilePath()>
 		<cfset var bean = createObject("component","homePortals.components.homePortalsConfigBean").init( expandPath(configPath) )>
