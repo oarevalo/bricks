@@ -5,5 +5,3 @@ Bricks is a content management system that focuses on three aspects: layout mana
 
 Notes:
  * deploy to any folder
- * requirements: 
- 	HomePortals http://www.homeportals.net/
