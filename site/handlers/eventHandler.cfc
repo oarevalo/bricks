@@ -11,9 +11,6 @@
 	
 	<cffunction name="setAdminView" access="private" returntype="void">
 		<cfargument name="viewName" type="string" required="true" />
-		<cfset var hp = getService("homePortals") />
-		<cfset var resourceTypes = hp.getResourceLibraryManager().getResourceTypes() />
-		<cfset setValue("resourceTypes", resourceTypes) />		
 		<cfset setValue("appRoot", getSetting("bricks.appRoot")) />
 		<cfset setView("admin/" & viewName) />
 		<cfset setLayout("admin") />

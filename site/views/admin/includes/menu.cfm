@@ -1,20 +1,12 @@
 <cfset isLoggedIn = structKeyExists(rs,"currentUser")>
+<cfset mainMenu = []>
+<cfset setupMenu = []>
 
-<cfset mainMenu = [
-				{label="Home", event="admin.home"}
-			] />
-<cfset setupMenu = [
-				{label="Routes", event="admin.routes"},
-				{label="Templates", event="admin.templates"},
-				{label="Layouts", event="admin.layouts"},
-				{label="Config", event="admin.config"}
-			] />
-
+<!--- the menu options are defined on the config dir, so that we can modify them independently
+	of the main application --->
 <cfif isLoggedIn>
-	<cfloop array="#rs.resourceTypes#" index="item">
-		<cfset arrayAppend(mainMenu, {label=item, event="admin.resources", extra="type=#item#"}) />	
-	</cfloop>			
-</cfif>			
+	<cfinclude template="/bricksApp/config/adminMenu.cfm">
+</cfif>
 
 <cfoutput>
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -23,13 +15,13 @@
 			<cfif isLoggedIn>
 			<ul class="nav">
 				<cfloop array="#mainMenu#" index="item">
-					<cfif rs.event eq "admin.resources">
-						<cfset selected = (item.event eq rs.event and rs.type eq item.label)>
+					<cfif structKeyExists(item,"paramName") and item.paramName neq "">
+						<cfset selected = (item.event eq rs.event and rs[item.paramName] eq item.paramValue)>
 					<cfelse>
 						<cfset selected = (item.event eq rs.event)>
 					</cfif>
-					<cfif structKeyExists(item,"extra")>
-						<cfset href = "index.cfm?event=#item.event#&#item.extra#">
+					<cfif structKeyExists(item,"paramName")>
+						<cfset href = "index.cfm?event=#item.event#&#item.paramName#=#item.paramValue#">
 					<cfelse>
 						<cfset href = "index.cfm?event=#item.event#">
 					</cfif>
