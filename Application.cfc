@@ -1,4 +1,4 @@
-<cfcomponent>
+<cfcomponent output="false">
 
 	<!--- Define application settings --->
 	<cfset this.applicationName = "bricksApp">
