@@ -1,8 +1,10 @@
 <cfcomponent>
 	<cfset variables.contexts = {}>
+	<cfset variables.contextAliases = {}>
 	<cfset variables.configTimestamp = "1/1/1800">
 	<cfset variables.configPath = "">
 	<cfset variables.__NO_ROUTE__ = "__no_route__">
+	<cfset variables.defailtContextName = "default">
 
 	<cffunction name="init" access="public" returntype="routeParser">
 		<cfargument name="configPath" type="string" required="true" />
@@ -22,37 +24,49 @@
 		<cfset var item = "">
 		
 		<cfset variables.contexts = {}>
+		<cfset variables.contextAliases = {}>
 		
 		<cfloop array="#contextNodes#" index="context">
-			<cfset contextName = "default" />
+			<!--- get context name --->
+			<cfset contextName = variables.defailtContextName />
 			<cfif structKeyExists(context.xmlAttributes,"name") and context.xmlAttributes.name neq "">
 				<cfset contextName = context.xmlAttributes.name />
 			</cfif>
-			
-			<cfset routeNodes = xmlSearch(context,"//route") />
-			<cfloop array="#routeNodes#" index="route">
-				<cfset params = {}>
-				<cfloop collection="#route.xmlAttributes#" item="item">
-					<cfset params[item] = route.xmlAttributes[item]>
+						
+			<!--- register context aliases --->
+			<cfif structKeyexists(context.xmlAttributes,"aliases") and context.xmlAttributes.aliases neq "">
+				<cfloop list="#context.xmlAttributes.aliases#" index="item">
+					<cfset variables.contextAliases[item] = contextName>
 				</cfloop>
-				<cfset addRoute(contextName, route.xmlAttributes.path, route.xmlAttributes.page, params) />
-			</cfloop>
-
-			<cfset routeNodes = xmlSearch(context,"//noroute") />
-			<cfif arrayLen(routeNodes) gt 0>
-				<cfset params = {}>
-				<cfloop collection="#routeNodes[1].xmlAttributes#" item="item">
-					<cfset params[item] = routeNodes[1].xmlAttributes[item]>
-				</cfloop>
-				<cfset setNoRoute(contextName, routeNodes[1].xmlAttributes.page, params) />
 			</cfif>
+						
+			<cfset routeNodes = context.xmlChildren />
+			<cfloop array="#routeNodes#" index="route">
+				<!--- register routes --->
+				<cfif route.xmlName eq "route">
+					<cfset params = {}>
+					<cfloop collection="#route.xmlAttributes#" item="item">
+						<cfset params[item] = route.xmlAttributes[item]>
+					</cfloop>
+					<cfset addRoute(contextName, route.xmlAttributes.path, route.xmlAttributes.page, params) />
+				</cfif>
+
+				<!--- register no-route --->
+				<cfif route.xmlName eq "noroute">
+					<cfset params = {}>
+					<cfloop collection="#routeNodes[1].xmlAttributes#" item="item">
+						<cfset params[item] = routeNodes[1].xmlAttributes[item]>
+					</cfloop>
+					<cfset setNoRoute(contextName, routeNodes[1].xmlAttributes.page, params) />
+				</cfif>
+			</cfloop>
 		</cfloop>
 
 		<cfset variables.configTimestamp = now()>
 	</cffunction>
 	
 	<cffunction name="parse" access="public" returntype="struct">
-		<cfargument name="context" type="string" required="true" />
+		<cfargument name="context" type="string" required="true" hint="a context name or an alias" />
 		<cfargument name="route" type="string" required="true" />
 
 		<!--- reload config if necessary --->
@@ -64,7 +78,11 @@
 
 		<!--- validate request --->
 		<cfif not hasContext(context)>
-			<cfthrow message="The requested route context [#context#] is not defined" type="contextNotDefined">
+			<cfif not hasContextAlias(context)>
+				<cfthrow message="The requested route context [#context#] is not defined" type="contextNotDefined">
+			<cfelse>
+				<cfset context = getAliasOf(context)>
+			</cfif>
 		</cfif>
 		<cfif not hasRoute(context, route)>
 			<!--- see if we have noRoute defined for this context --->
@@ -75,7 +93,7 @@
 			</cfif>
 			<cfthrow message="The requested route [#route#] is not defined for the given context" type="routeNotDefined">
 		</cfif>
-		
+
 		<!--- lookup context/route --->
 		<cfreturn variables.contexts[context][route]>
 	</cffunction>
@@ -83,6 +101,11 @@
 	<cffunction name="hasContext" access="public" returntype="boolean">
 		<cfargument name="context" type="string" required="true">
 		<cfreturn structKeyExists(contexts, context)>
+	</cffunction>
+
+	<cffunction name="hasContextAlias" access="public" returntype="boolean">
+		<cfargument name="alias" type="string" required="true">
+		<cfreturn structKeyExists(contextAliases, alias)>
 	</cffunction>
 
 	<cffunction name="hasRoute" access="public" returntype="boolean">
@@ -124,6 +147,11 @@
 	<cffunction name="getNoRoute" access="public" returntype="struct">
 		<cfargument name="context" type="string" required="true">
 		<cfreturn variables.contexts[context][__NO_ROUTE__]>
+	</cffunction>
+
+	<cffunction name="getAliasOf" access="public" returntype="string">
+		<cfargument name="alias" type="string" required="true">
+		<cfreturn variables.contextAliases[alias]>
 	</cffunction>
 
 	<cffunction name="checkConfigReload" access="private" returntype="void">
