@@ -8,6 +8,15 @@
 		<route path="home" page="home" />
 		<route path="about" page="content" resourceID="about" />
 		<route path="documentation" page="content" resourceID="documentation" />
+
+		<!-- can also use regular expressions and can also use back references for 
+			token replacement:
+
+				<route path="content/(.*)" page="content" resourceID="$1" />
+
+			Will match any page within the content directory, and use the page name for the 
+			resourceID property.
+		-->
 		
 		<!-- catch-all rule for all non defined routes -->
 		<noroute page="content" resourceID="404" />
