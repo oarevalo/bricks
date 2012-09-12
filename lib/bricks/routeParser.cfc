@@ -232,7 +232,8 @@
 	</cffunction>
 
 	<cffunction name="checkConfigReload" access="private" returntype="void">
-		<cfset var info = getFileInfo(variables.configPath)>
+		<cfset var path = expandPath(variables.configPath)>
+		<cfset var info = getFileInfo(path)>
 		<cfif dateCompare(info.lastModified, variables.configTimestamp, "s") gt 0>
 			<cfset loadConfig()>
 		</cfif>
