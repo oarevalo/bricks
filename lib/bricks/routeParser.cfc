@@ -15,8 +15,8 @@
 	</cffunction>
 
 	<cffunction name="loadConfig" access="public" returntype="void">
-		<cfset var xmlDoc = xmlParse(variables.configPath) />
-		<cfset var contextNodes = xmlSearch(xmlDoc,"//context") />
+		<cfset var xmlDoc = 0 />
+		<cfset var contextNodes = [] />
 		<cfset var context = "">
 		<cfset var contextName = "">
 		<cfset var routeNodes = []>
@@ -28,6 +28,16 @@
 		<cfset variables.contexts = {}>
 		<cfset variables.contextAliases = {}>
 		
+		<!--- check that config file exists, otherwise we get a not very intuitive error message --->
+		<cfif variables.configPath eq "" or not fileExists(expandPath(variables.configPath))>
+			<cfthrow message="Invalid or missing routes config file.">
+		</cfif>
+		
+		<!--- load and parse config file --->
+		<cfset var xmlDoc = xmlParse(expandPath(variables.configPath)) />
+
+		<!--- parse contexts --->		
+		<cfset var contextNodes = xmlSearch(xmlDoc,"//context") />
 		<cfloop array="#contextNodes#" index="context">
 			<!--- get context name --->
 			<cfset contextName = variables.defailtContextName />
