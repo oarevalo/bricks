@@ -619,10 +619,10 @@
 
 				if(right(path,1) neq "/")
 					path = path & "/";
-					
+				
 				var tmpName = name;
 				var index = 1;
-				while(directoryExists(resourceLibrarypath & path & tmpName)) {
+				while(directoryExists(expandPath(resourceLibrarypath & path & tmpName))) {
 					tmpName = name & index;
 					index++;
 				}
@@ -652,7 +652,8 @@
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name"));
 
-				directoryDelete(resourceLibrarypath & path & name, true);
+				var pgkPath = rereplace(resourceLibrarypath & path & name,"//+","/");
+				directoryDelete(expandPath(pgkPath), true);
 					
 				setMessage("info", "Folder deleted");
 				setNextEvent("admin.resources","package=#path#&type=#type#");
@@ -677,8 +678,11 @@
 				var path = trim(getValue("package"));
 				var name = trim(getValue("name"));
 				var newname = trim(getValue("newname"));
-
-				directoryRename(resourceLibrarypath & path & name, resourceLibrarypath & path & newName);
+				
+				var sourcePath = rereplace(resourceLibrarypath & path & name,"//+","/");
+				var targetPath = rereplace(resourceLibrarypath & path & newName,"//+","/");
+				
+				directoryRename(expandPath(sourcePath), expandPath(targetPath));
 					
 				setMessage("info", "Folder renamed");
 				setNextEvent("admin.resources","package=#path#&type=#type#");
