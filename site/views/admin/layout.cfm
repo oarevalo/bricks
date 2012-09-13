@@ -20,11 +20,11 @@
 
 			<textarea name="editor" id="editor" style="border:1px solid black;">#htmlEditFormat(trim(rs.fileContent))#</textarea><br />
 
-			<span style="float:right;">#rs.path##rs.name#</span>
+			<span style="float:right;"><b>Path:</b> #rs.path##rs.name#</span>
 
 			<input type="submit" class="btn" value="Apply Changes">
 			&nbsp;
-			<a href="index.cfm?event=admin.layouts&path=#rs.path#">Cancel</a>
+			<a href="index.cfm?event=admin.layouts&path=#rs.path#">Go Back</a>
 		</form>
 	
 		<script type="text/javascript">

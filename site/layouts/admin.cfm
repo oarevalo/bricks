@@ -7,18 +7,7 @@
 		<title>Bricks 0.1 : Site Admin</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-		<style type="text/css">
-		   body {
-		     padding-top: 60px;
-		     padding-bottom: 40px;
-		   }
-		   .sidebar-nav {
-		     padding: 9px 0;
-		   }
-		   .CodeMirror {
-			   	border:1px solid silver;
-		   }
-		</style>
+		<link href="site/views/admin/includes/style.css" rel="stylesheet">
 	</head>
 	<body>
 		<!--- main menu --->

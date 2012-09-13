@@ -11,6 +11,7 @@
 <cfset app.paths.core = "/bricksApp/lib/core">
 <cfset app.paths.coreImages = "lib/core/images">
 <cfset app.paths.modules = "/bricksApp/modules">
+<cfset app.paths.message = "/bricksApp/lib/bricks/message.cfm">
 
 <cfset app.dirs.handlers = "site/handlers">
 <cfset app.dirs.layouts = "site/layouts">

@@ -7,6 +7,7 @@
 		<title>#rs.pageTitle#</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
 	</head>
 	<body>
 		<div class="container">
@@ -22,6 +23,7 @@
 		</div>
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="main.js"></script>
 	</body>
 </html>
 </cfoutput>	

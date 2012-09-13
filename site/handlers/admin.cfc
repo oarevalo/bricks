@@ -325,7 +325,7 @@
 				getService("homePortals").reinit();
 				
 				setMessage("info", "Template saved");
-				setNextEvent("admin.templates");
+				setNextEvent("admin.templates","type=#type#&name=#name#");
 
 			} catch(validation e) {
 				setMessage("warning", e.message);
@@ -565,7 +565,7 @@
 				fileWrite(pageInfo.path,content,"utf-8");	
 					
 				setMessage("info", "Layout saved");
-				setNextEvent("admin.layouts","path=#path#");
+				setNextEvent("admin.layout","path=#path#&name=#name#");
 
 			} catch(validation e) {
 				setMessage("warning", e.message);
@@ -765,7 +765,7 @@
 				getService("homePortals").reinit();
 
 				setMessage("info", "Resource saved");
-				setNextEvent("admin.resources","type=#restype#&package=#package#");
+				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#id#");
 
 			} catch(validation e) {
 				setMessage("warning", e.message);
