@@ -11,5 +11,6 @@
 				{label="Routes", event="admin.routes"},
 				{label="Templates", event="admin.templates"},
 				{label="Layouts", event="admin.layouts"},
-				{label="Config", event="admin.config"}
+				{label="Config", event="admin.config"},
+				{label="Reload Site", event="admin.home", paramName="resetApp", paramValue="1"}
 			] />
