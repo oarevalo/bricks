@@ -55,9 +55,10 @@
 					<td style="text-align:center;">Folder</td>
 					<td style="text-align:center;">
 						<div class="btn-group">
-						  <a class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="##">
-						    Action <span class="caret"></span>
-						  </a>
+							<a class="btn btn-small" href="index.cfm?event=admin.resources&type=#rs.type#&package=#rs.packages.name#/">Open</a>
+						  <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+							<span class="caret"></span>
+						  </button>
 						  <ul class="dropdown-menu" style="text-align:left;">
 						  	<li><a href="##" rel="index.cfm?event=admin.doDeleteResourcePackage&name=#rs.packages.name#&type=#rs.type#&package=#rs.package#" class="deleteLink">Delete</a></li>
 						  	<li><a href="##" rel="index.cfm?event=admin.doRenameResourcePackage&name=#rs.packages.name#&type=#rs.type#&package=#rs.package#" class="renameLink">Rename</a></li>
@@ -75,9 +76,10 @@
 					<td style="text-align:center;">Resource</td>
 					<td style="text-align:center;">
 						<div class="btn-group">
-						  <a class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="##">
-						    Action <span class="caret"></span>
-						  </a>
+							<a class="btn btn-small" href="index.cfm?event=admin.resource&id=#resource.getID()#&type=#rs.type#&package=#rs.package#">Edit</a>
+						  <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+							<span class="caret"></span>
+						  </button>
 						  <ul class="dropdown-menu" style="text-align:left;">
 						  	<li><a href="index.cfm?event=admin.resource&id=#resource.getID()#&type=#rs.type#&package=#rs.package#">Edit</a></li>
 						  	<li><a href="##" rel="index.cfm?event=admin.doDeleteResource&id=#resource.getID()#&type=#rs.type#&package=#rs.package#" class="deleteLink">Delete</a></li>

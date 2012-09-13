@@ -52,15 +52,21 @@
 					<td style="text-align:center;">#rs.qryDir.type#</td>
 					<td style="text-align:center;">
 						<div class="btn-group">
-						  <a class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="##">
-						    Action <span class="caret"></span>
-						  </a>
+						  	<cfif rs.qryDir.type eq "page">
+							  	<a class="btn btn-small" href="index.cfm?event=admin.layout&name=#rs.qryDir.name#&path=#rs.path#">Edit</a>
+							<cfelse>
+								<a class="btn btn-small" href="index.cfm?event=admin.layouts&path=#rs.path##rs.qryDir.name#/">Open</a>
+							</cfif>
+						  <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+							<span class="caret"></span>
+						  </button>
 						  <ul class="dropdown-menu" style="text-align:left;">
 						  	<cfif rs.qryDir.type eq "page">
 							  	<li><a href="index.cfm?event=admin.layout&name=#rs.qryDir.name#&path=#rs.path#">Edit</a></li>
 							  	<li><a href="##" rel="index.cfm?event=admin.doRenameLayout&name=#rs.qryDir.name#&path=#rs.path#" class="renameLink">Rename</a></li>
 							  	<li><a href="##" rel="index.cfm?event=admin.doDeleteLayout&name=#rs.qryDir.name#&path=#rs.path#" class="deleteLink">Delete</a></li>
 							<cfelse>
+								<li><a href="index.cfm?event=admin.layouts&path=#rs.path##rs.qryDir.name#/">Open</a></li>
 							  	<li><a href="##" rel="index.cfm?event=admin.doRenameLayoutFolder&name=#rs.qryDir.name#&path=#rs.path#" class="renameLink">Rename</a></li>
 							  	<li><a href="##" rel="index.cfm?event=admin.doDeleteLayoutFolder&name=#rs.qryDir.name#&path=#rs.path#" class="deleteLink">Delete</a></li>
 							</cfif>

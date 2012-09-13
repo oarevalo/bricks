@@ -62,7 +62,7 @@
 		<li><a href="index.cfm?event=admin.resources&package=#rs.package#&type=#rs.type#">#rs.typeLabel#</a> <span class="divider">/</span></li>
 		<li class="active">Add/Edit Resource</li>
 	</ul>
-	<h1>Add/Edit Resource: #titleLabel#</h1>
+	<h1>Add/Edit '#titleLabel#'</h1>
 	
 	<cfif not isEditable>
 		<div class="alert">
