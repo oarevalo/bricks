@@ -1,0 +1,10 @@
+# This file can be used to affect how search engines and other web site crawlers see your site.
+
+User-agent: *
+Disallow: 
+Disallow: /cgi-bin/
+Disallow: /admin/
+Disallow: /config/
+Disallow: /lib/
+Disallow: /site/
+Disallow: /WEB-INF/
