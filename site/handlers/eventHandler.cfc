@@ -23,5 +23,20 @@
 		<cfset setView(viewName) />
 		<cfset setLayout("custom") />
 	</cffunction>
+
+	<cffunction name="setContentView" access="private" returntype="void">
+		<cfargument name="page" type="any" required="true" />
+		<cfargument name="params" type="struct" required="false" default="#structNew()#" />
+
+		<!--- load the page --->
+		<cfset var renderer = getService("homePortals").load(page) />
+
+		<!--- pass values for rendering --->
+		<cfset setValue("pageParams", params)>
+		<cfset setValue("renderer", renderer) />
+		
+		<!--- set the layout that knows how to render homePortals pages --->
+		<cfset setLayout("renderer")>
+	</cffunction>
 	
 </cfcomponent>

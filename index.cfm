@@ -18,7 +18,7 @@
 <cfset app.dirs.views = "site/views">
 
 <cfset app.mainHandler = "main">
-<cfset app.defaultEvent = "home">
+<cfset app.defaultEvent = "">
 <cfset app.configDoc = "config/config.xml.cfm">
 
 
