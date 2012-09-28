@@ -6,6 +6,9 @@
 	<cfproperty name="currentPage" type="string" hint="The path of the page to use as currently selected. Optional. By default uses the path of the current homeportals page" />
 
 	<cfset variables.DEFAULT_PAGE_HREF = "?page=%pageName">
+	<cfset variables.DEFAULT_SHOW_SEARCH = true>
+	<cfset variables.DEFAULT_SEARCH_TARGET = "">
+	<cfset variables.DEFAULT_SEARCH_PARAM = "q">
 
 	<cffunction name="renderContent" access="public" returntype="void" hint="sets the rendered output for the head and body into the corresponding content buffers">
 		<cfargument name="headContentBuffer" type="homePortals.components.singleContentBuffer" required="true">	
@@ -20,6 +23,9 @@
 		<cfset var exclude = getContentTag().getAttribute("exclude")>
 		<cfset var itemHREFMask = getContentTag().getAttribute("pageHREF",variables.DEFAULT_PAGE_HREF)>
 		<cfset var thisPageHREF = getContentTag().getAttribute("currentPage",trim(getPageRenderer().getPageHREF()))>
+		<cfset var showSearch = getContentTag().getAttribute("showSearch",variables.DEFAULT_SHOW_SEARCH)>
+		<cfset var searchTarget = getContentTag().getAttribute("searchTarget",variables.DEFAULT_SEARCH_TARGET)>
+		<cfset var searchParam = getContentTag().getAttribute("searchParam",variables.DEFAULT_SEARCH_PARAM)>
 		<cfset var thisFolder = "/">
 		<cfset var qryPages = 0>
 		<cfset var pp = getPageRenderer().getHomePortals().getPageProvider()>
@@ -101,6 +107,14 @@
 								</cfif>
 							</cfloop>
 						</ul>
+						<cfif showSearch>
+					        <form class="navbar-form form-search pull-right" method="GET" action="#searchTarget#" accept-charset="UTF-8">
+					          <div class="input-append">
+					            <input type="text" name="#searchParam#" class="span2 search-query" placeholder="Search...">
+					            <button type="submit" class="btn">Search</button>
+					          </div>
+					        </form>
+						</cfif>
 					</div>
 				</div>
 			</cfoutput>
