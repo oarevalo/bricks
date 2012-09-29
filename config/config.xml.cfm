@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <config>
 	<settings>
+		<!-- Web-relative Location of this App -->
+		<setting name="bricks.appRoot" value="./" />
+
 		<!-- Bricks settings -->
-		<setting name="bricks.appRoot" value="$APP_PATH" />
 		<setting name="bricks.routesConfig" value="/bricksApp/config/routes.xml" />
 		<setting name="bricks.usersConfig" value="/bricksApp/config/users.xml.cfm" />
 		<setting name="bricks.resourceLibraryPath" value="/bricksApp/content/resources/" />
@@ -19,19 +21,19 @@
 	<!-- This section describes all services that will be loaded into the application -->
 	<services>
 		<service name="homePortals" class="homePortals.components.homePortals">
-			<init-param name="appRoot">$APP_PATH</init-param>
+			<init-param name="appRoot" settingName="bricks.appRoot" />
 		</service>
 
-		<service name="routeParser" class="bricksApp.lib.bricks.routeParser">
+		<service name="routeParser" class="bricksLib.bricks.routeParser">
 			<init-param name="configPath" settingName="bricks.routesConfig" />
 		</service>
 		
-		<service name="userSessionManager" class="bricksApp.lib.bricks.simpleUserSessionManager">
+		<service name="userSessionManager" class="bricksLib.bricks.simpleUserSessionManager">
 			<init-param name="configPath" settingName="bricks.usersConfig" />
 		</service>
 	
 		<!-- error reporting service 
-		<service name="bugTracker" class="bricksApp.lib.bricks.bugLogService">
+		<service name="bugTracker" class="bricksLib.bricks.bugLogService">
 			<init-param name="bugLogListener" settingName="bugLog.emailRecipient" />
 			<init-param name="bugEmailSender" settingName="bugLog.emailSender" />
 			<init-param name="bugEmailRecipients" settingName="bugLog.listener" />

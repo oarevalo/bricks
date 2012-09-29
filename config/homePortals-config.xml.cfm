@@ -10,6 +10,7 @@
 		<renderTemplate name="footer" type="module" href="content/templates/footer.htm" />
 	</renderTemplates>
 	<contentRenderers>
-		<contentRenderer moduleType="navBar" path=".lib.renderers.navBar" />
+		<contentRenderer moduleType="navBar" path="bricksLib.renderers.navBar" />
+		<contentRenderer moduleType="event" path="bricksLib.renderers.event" />
 	</contentRenderers>
 </homePortals>

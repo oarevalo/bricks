@@ -32,7 +32,9 @@
 						pages="|,Home,About,Documentation" 
 						title="Bricks" 
 						currentPage="{path}"  />
-				
+		
+		<view href="/bricksLib/bricks/message.cfm" location="main" />	
+		
 		<text value="https://github.com/oarevalo/bricks" 
 				href="https://github.com/oarevalo/bricks" 
 				location="content_bottom" 

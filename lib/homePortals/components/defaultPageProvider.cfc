@@ -42,7 +42,7 @@
 		<cfset var oPage = 0>
 
 		<cfif not pageExists(arguments.path)>
-			<cfthrow message="Page not found. [#arguments.path#]" type="pageProvider.pageNotFound">
+			<cfthrow message="Page not found. [#arguments.path#]" type="pageProvider.pageNotFound" detail="#resolvePath(normalizeFilePath(arguments.path))#">
 		</cfif>
 
 		<cfset xmlDoc = xmlParse(resolvePath(normalizeFilePath(arguments.path)))>
