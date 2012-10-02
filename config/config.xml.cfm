@@ -5,11 +5,13 @@
 		<setting name="bricks.appRoot" value="./" />
 
 		<!-- Bricks settings -->
-		<setting name="bricks.routesConfig" value="/bricksApp/config/routes.xml" />
 		<setting name="bricks.usersConfig" value="/bricksApp/config/users.xml.cfm" />
 		<setting name="bricks.resourceLibraryPath" value="/bricksApp/content/resources/" />
-		<setting name="bricks.defaultContext" value="default" />
-	
+		<setting name="bricks.routes.config" value="/bricksApp/config/routes.xml" />
+		<setting name="bricks.routes.defaultContext" value="default" />
+		<setting name="bricks.routes.useFakeSES" value="false" />
+		<setting name="bricks.routes.param" value="page" />
+			
 		<!-- Bug reporting 
 		<setting name="bugLog.emailRecipient" value="" />
 		<setting name="bugLog.emailSender" value="" />

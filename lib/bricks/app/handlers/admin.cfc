@@ -22,7 +22,7 @@
 	<cffunction name="routes">
 		<cfscript>
 			checkLoggedInUser();
-			var routesFile = getSetting("bricks.routesConfig");
+			var routesFile = getSetting("bricks.routes.config");
 			var fileContent = fileRead(expandPath(routesFile),"utf-8");
 			setValue("fileContent",fileContent);
 			setAdminView("routes");
@@ -227,7 +227,7 @@
 			checkLoggedInUser();
 			
 			try {
-				var routesFile = getSetting("bricks.routesConfig");
+				var routesFile = getSetting("bricks.routes.config");
 				var content = trim(getValue("editor"));
 				if(content eq "")
 					throw(type="validation", message="Routes definition cannot be empty");
