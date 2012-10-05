@@ -2,23 +2,34 @@
 <routes>
 	<context name="default">
 		<!-- Define what we want as the homepage -->
-		<route path="" page="home" />
+		<route uri="" path="home" />
 		
 		<!-- Define the site structure -->
-		<route path="home" page="home" />
-		<route path="about" page="content" resourceID="about" />
-		<route path="documentation" page="content" resourceID="documentation" />
+		<route uri="home" path="home" />
+		<route uri="about" path="content" resourceID="about" />
+		<route uri="documentation" path="content" resourceID="documentation" />
 
-		<!-- can also use regular expressions and can also use back references for 
-			token replacement:
+		<!-- Tokens and Regular Expressions:
+			The uri attribute supports regular expressions and tokens. The following
+			routes are equivalent:
 
-				<route path="content/(.*)" page="content" resourceID="$1" />
+				<route uri="content/([a-z0-9_]+)" path="content" resourceID="$1" />
+			or
+				<route uri="content/{resourceID}" path="content" />
 
 			Will match any page within the content directory, and use the page name for the 
 			resourceID property.
 		-->
+		<!-- HTTP Verbs
+			you can use http verbs (get,post,put,delete,head) instead of the "route" element
+			to indicate that a route would only match when both verb and route matches:
+			
+				<get uri="/some/resource" path="some/path" />
+				<post uri="/some/resource" path="do/something" />
+				...
+		 -->
 		
 		<!-- catch-all rule for all non defined routes -->
-		<noroute page="content" resourceID="404" />
+		<noroute path="content" resourceID="404" />
 	</context>
 </routes>
