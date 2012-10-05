@@ -1,16 +1,19 @@
 <cfcomponent>
 	<cfset variables.contexts = {}>
 	<cfset variables.contextAliases = {}>
+	<cfset variables.contextRoutes = {}>
 	<cfset variables.configTimestamp = "1/1/1800">
 	<cfset variables.configPath = "">
 	<cfset variables.__ROOT_ROUTE__ = "__root__">
 	<cfset variables.__NO_ROUTE__ = "__no_route__">
-	<cfset variables.defailtContextName = "default">
+	<cfset variables.defaultContextName = "default">
 
 	<cffunction name="init" access="public" returntype="routeParser">
-		<cfargument name="configPath" type="string" required="true" />
-		<cfset variables.configPath = arguments.configPath>
-		<cfset loadConfig() />
+		<cfargument name="configPath" type="string" required="false" default="" />
+		<cfif arguments.configPath neq "">
+			<cfset variables.configPath = arguments.configPath>
+			<cfset loadConfig() />
+		</cfif>
 		<cfreturn this />
 	</cffunction>
 
@@ -23,10 +26,11 @@
 		<cfset var route = "">
 		<cfset var params = {}>
 		<cfset var item = "">
-		<cfset var tmpPath = "">
+		<cfset var tmpURI = "">
 		
 		<cfset variables.contexts = {}>
 		<cfset variables.contextAliases = {}>
+		<cfset variables.contextRoutes = {}>
 		
 		<!--- check that config file exists, otherwise we get a not very intuitive error message --->
 		<cfif variables.configPath eq "" or not fileExists(expandPath(variables.configPath))>
@@ -40,7 +44,7 @@
 		<cfset var contextNodes = xmlSearch(xmlDoc,"//context") />
 		<cfloop array="#contextNodes#" index="context">
 			<!--- get context name --->
-			<cfset contextName = variables.defailtContextName />
+			<cfset contextName = variables.defaultContextName />
 			<cfif structKeyExists(context.xmlAttributes,"name") and context.xmlAttributes.name neq "">
 				<cfset contextName = context.xmlAttributes.name />
 			</cfif>
@@ -48,34 +52,32 @@
 			<!--- register context aliases --->
 			<cfif structKeyexists(context.xmlAttributes,"aliases") and context.xmlAttributes.aliases neq "">
 				<cfloop list="#context.xmlAttributes.aliases#" index="item">
-					<cfset variables.contextAliases[item] = contextName>
+					<cfset addAlias(contextName, item) />
 				</cfloop>
 			</cfif>
 						
 			<cfset routeNodes = context.xmlChildren />
 			<cfloop array="#routeNodes#" index="route">
-				<!--- register routes --->
-				<cfif route.xmlName eq "route">
-					<cfset params = {}>
-					<cfloop collection="#route.xmlAttributes#" item="item">
+				<!--- build params --->
+				<cfset params = {}>
+				<cfloop collection="#route.xmlAttributes#" item="item">
+					<cfif item neq "uri" and item neq "path">
 						<cfset params[item] = route.xmlAttributes[item]>
-					</cfloop>
-					<cfif route.xmlAttributes.path eq "">
-						<cfset tmpPath = __ROOT_ROUTE__>
-					<cfelse>
-						<cfset tmpPath = route.xmlAttributes.path>
 					</cfif>
-					<cfset addRoute(contextName, tmpPath, route.xmlAttributes.page, params) />
-				</cfif>
+				</cfloop>
 
-				<!--- register no-route --->
-				<cfif route.xmlName eq "noroute">
-					<cfset params = {}>
-					<cfloop collection="#route.xmlAttributes#" item="item">
-						<cfset params[item] = route.xmlAttributes[item]>
-					</cfloop>
-					<cfset setNoRoute(contextName, route.xmlAttributes.page, params) />
-				</cfif>
+				<!--- register routes --->
+				<cfswitch expression="#route.xmlName#">
+					<cfcase value="route">
+						<cfset addRoute(contextName, route.xmlAttributes.uri, route.xmlAttributes.path, params, "any") />
+					</cfcase>
+					<cfcase value="noroute">
+						<cfset setNoRoute(contextName, route.xmlAttributes.path, params) />
+					</cfcase>
+					<cfdefaultcase>
+						<cfset addRoute(contextName, route.xmlAttributes.uri, route.xmlAttributes.path, params, route.xmlName) />
+					</cfdefaultcase>
+				</cfswitch>
 			</cfloop>
 		</cfloop>
 
@@ -83,8 +85,9 @@
 	</cffunction>
 	
 	<cffunction name="parse" access="public" returntype="struct">
-		<cfargument name="context" type="string" required="true" hint="a context name or an alias" />
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#" hint="a context name or an alias">
 		<cfargument name="route" type="string" required="true" />
+		<cfargument name="method" type="string" required="false" default="any">
 
 		<!--- reload config if necessary --->
 		<cfset checkConfigReload()>
@@ -107,15 +110,21 @@
 		<cfif not hasRoute(context, route)>
 			<!--- see if we have noRoute defined for this context --->
 			<cfif hasNoRoute(context)>
-				<cfset var noroute = duplicate(getNoRoute(context))>
-				<cfset noroute.params.requestedpath = route>
-				<cfreturn noroute>
+				<cfset var noroute = getNoRoute(context)>
+				<cfset var rtn = {
+						route = arguments.route,
+						context = arguments.context,
+						path = noroute.any.path,
+						params = noroute.any.params,
+						method = arguments.method		
+					}>
+				<cfreturn rtn>
 			</cfif>
 			<cfthrow message="The requested route [#route#] is not defined for the given context" type="routeNotDefined">
 		</cfif>
 
 		<!--- lookup context/route --->
-		<cfreturn getRoute(context, route)>
+		<cfreturn getRoute(context, route, method)>
 	</cffunction>
 
 	<cffunction name="hasContext" access="public" returntype="boolean">
@@ -124,12 +133,17 @@
 	</cffunction>
 
 	<cffunction name="hasContextAlias" access="public" returntype="boolean">
-		<cfargument name="alias" type="string" required="true">
-		<cfreturn structKeyExists(contextAliases, alias)>
+		<cfargument name="context" type="string" required="true">
+		<cfreturn structKeyExists(contextAliases, context)>
+	</cffunction>
+
+	<cffunction name="hasContextOrAlias" access="public" returntype="boolean">
+		<cfargument name="contextOrAlias" type="string" required="true">
+		<cfreturn hasContext(contextOrAlias) or hasContextAlias(contextOrAlias)>
 	</cffunction>
 
 	<cffunction name="hasRoute" access="public" returntype="boolean">
-		<cfargument name="context" type="string" required="true">
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#">
 		<cfargument name="route" type="string" required="true">
 		<cfset var key = "">
 		<cfset var thisContext = contexts[context]>
@@ -152,63 +166,132 @@
 	</cffunction>
 
 	<cffunction name="hasNoRoute" access="public" returntype="boolean">
-		<cfargument name="context" type="string" required="true">
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#">
 		<cfreturn structKeyExists(contexts[context], __NO_ROUTE__)>
 	</cffunction>
 
-	<cffunction name="addRoute" access="public" returntype="void">
-		<cfargument name="context" type="string" required="true">
+	<cffunction name="addRoute" access="public" returntype="routeParser">
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#">
+		<cfargument name="route" type="string" required="true">
 		<cfargument name="path" type="string" required="true">
-		<cfargument name="page" type="string" required="true">
 		<cfargument name="params" type="struct" required="false" default="#structNew()#">
+		<cfargument name="method" type="string" required="false" default="any">
 
 		<!--- make sure context and path are always lowercase to avoid casing issues --->
-		<cfset context = lcase(trim(context))>
-		<cfset path = lcase(trim(path))>
-		<cfset page = trim(page)>
+		<cfset var theContext = lcase(trim(arguments.context))>
+		<cfset var theRoute = lcase(trim(arguments.route))>
+		<cfset var thePath = trim(arguments.path)>
+		<cfset var theMethod = lcase(trim(arguments.method))>
 		
-		<cfif not structKeyExists(variables.contexts, context)>
-			<cfset variables.contexts[context] = {} />
+		<!--- initialize context if needed --->
+		<cfif not structKeyExists(variables.contexts, theContext)>
+			<cfset variables.contexts[theContext] = {} />
+			<cfset variables.contextRoutes[theContext] = [] />
 		</cfif>
-		<cfset variables.contexts[context][path] = {page = page, 
-																		params = params}>
+
+		<!--- make sure we don't have empty routes --->
+		<cfif theRoute eq "">
+			<cfset theRoute = __ROOT_ROUTE__>
+		</cfif>
+	
+		<!--- check for tokens in route and replace with regexp --->
+		<cfset var tokenRegex = "[a-z][0-9a-z_]+">
+		<cfset var tokenRegexExpanded = "[0-9a-z-_+]+">
+		<cfset var index = 1 />
+		<cfset var reCheck = reFindNoCase("{(#tokenRegex#)}", theRoute, index, true)/>
+		<cfset var tokenFound = (arrayLen(reCheck.pos) gt 1) />
+		<cfset var subIndex = 1/>
+		<cfloop condition="#tokenFound#">
+			<cfloop from="2" to="#arrayLen(reCheck.pos)#" index="i">
+				<cfset tokenName = mid(theRoute, reCheck.pos[i], reCheck.len[i])>
+				<cfset arguments.params[tokenName] = "$#subIndex#">
+				<cfset thePath = replaceNoCase(thePath, "{#tokenName#}", "$#subIndex#", "all")>
+				<cfset theRoute = replaceNoCase(theRoute, "{#tokenName#}", "(#tokenRegexExpanded#)", "all")>
+			</cfloop>
+			<cfset index = reCheck.pos[1] + reCheck.len[1]>
+			<cfset subIndex++>
+			<cfset reCheck = reFindNoCase("{(#tokenRegex#)}", theRoute, index, true)/>
+			<cfset tokenFound = (arrayLen(reCheck.pos) gt 1) />
+		</cfloop>
+		
+		<!--- add route --->
+		<cfif not structKeyExists(variables.contexts[theContext], theRoute)>
+			<cfset variables.contexts[theContext][theRoute] = {}>
+		</cfif>
+		<cfset var tmp = "">
+		<cfloop list="#theMethod#" index="tmp">
+			<cfset variables.contexts[theContext][theRoute][tmp] = {path = thePath, 
+																	params = arguments.params}>
+		</cfloop>
+		<cfset arrayAppend(variables.contextRoutes[theContext], theRoute)>														
+													
+		<cfreturn this>
 	</cffunction>
 
-	<cffunction name="setNoRoute" access="public" returntype="void">
-		<cfargument name="context" type="string" required="true">
-		<cfargument name="page" type="string" required="true">
+	<cffunction name="setNoRoute" access="public" returntype="routeParser">
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#">
+		<cfargument name="path" type="string" required="true">
 		<cfargument name="params" type="struct" required="false" default="#structNew()#">
-		<cfset addRoute(context, __NO_ROUTE__,page, params)>
+		<cfset addRoute(context, __NO_ROUTE__,path, params)>
+		<cfreturn this>
 	</cffunction>
 
 	<cffunction name="getRoute" access="public" returntype="struct">
-		<cfargument name="context" type="string" required="true">
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#">
 		<cfargument name="route" type="string" required="true">
-		<cfset var thisContext = contexts[context]>
+		<cfargument name="method" type="string" required="false" default="any">
+		<cfset var thisContext = variables.contexts[context]>
+		<cfset var thisContextRoutes = variables.contextRoutes[context]>
 		<cfset var reCheck = {}>
-		<cfset var rtn = {}>
 		<cfset var i = 0>
 		<cfset var token = "">
 		<cfset var key = "">
 		<cfset var key2 = "">
+		<cfset var tmp = {}>
+
+		<!--- prepare return struct --->
+		<cfset var rtn = {
+						route = arguments.route,
+						context = arguments.context,
+						path = "",
+						params = {},
+						method = arguments.method
+					}>
 		
 		<!--- check for exact match --->
 		<cfif structKeyExists(thisContext, route)>
-			<cfreturn variables.contexts[context][route]>
+			<cfif structKeyExists(thisContext[route], method)>
+				<cfset tmp = thisContext[route][method]>
+			<cfelseif structKeyExists(thisContext[route], "any")>
+				<cfset tmp = thisContext[route]["any"]>
+				<cfset rtn.method = "any">
+			<cfelse>
+				<cfthrow message="The requested route [#route#] is not defined for the given context and method" type="routeNotDefined">
+			</cfif>
+			<cfset rtn.path = tmp.path>
+			<cfset rtn.params = duplicate(tmp.params)>
+			<cfreturn rtn>
 		</cfif>
 		
 		<!--- check for regexp match --->
-		<cfloop collection="#thisContext#" item="key">
+		<cfloop array="#thisContextRoutes#" index="key">
 			<cfset reCheck = refindNoCase("^" & key & "$",route,1,true)>
 			<cfif reCheck.pos[1] gt 0>
-				<cfset rtn = duplicate(variables.contexts[context][key])>
-				<cfset rtn.params.path = arguments.route>
+				<cfif structKeyExists(thisContext[key], method)>
+					<cfset tmp = thisContext[key][method]>
+				<cfelseif structKeyExists(thisContext[key], "any")>
+					<cfset tmp = thisContext[key]["any"]>
+				<cfelse>
+					<cfthrow message="The requested route [#route#] is not defined for the given context and method" type="routeNotDefined">
+				</cfif>
+				<cfset rtn.path = tmp.path>
+				<cfset rtn.params = duplicate(tmp.params)>
 				<cfif arrayLen(reCheck.pos) gt 1>
 					<!--- do token replacement on back references --->
 					<cfloop from="2" to="#arrayLen(reCheck.pos)#" index="i">
 						<cfset token = "$#i-1#">
 						<cfset replaceWith = mid(route,reCheck.pos[i],reCheck.len[i])>
-						<cfset rtn.page = replace(rtn.page,token,replaceWith,"all")>
+						<cfset rtn.path = replace(rtn.path,token,replaceWith,"all")> 
 						<cfloop collection="#rtn.params#" item="key2">
 							<cfset rtn.params[key2] = replace(rtn.params[key2],token,replaceWith,"all")>
 						</cfloop>
@@ -222,8 +305,15 @@
 	</cffunction>
 
 	<cffunction name="getNoRoute" access="public" returntype="struct">
-		<cfargument name="context" type="string" required="true">
+		<cfargument name="context" type="string" required="false" default="#variables.defaultContextName#">
 		<cfreturn variables.contexts[context][__NO_ROUTE__]>
+	</cffunction>
+
+	<cffunction name="addAlias" access="public" returntype="routeParser">
+		<cfargument name="context" type="string" required="true">
+		<cfargument name="alias" type="string" required="true">
+		<cfset variables.contextAliases[arguments.alias] = arguments.context>
+		<cfreturn this>
 	</cffunction>
 
 	<cffunction name="getAliasOf" access="public" returntype="string">
@@ -232,11 +322,17 @@
 	</cffunction>
 
 	<cffunction name="checkConfigReload" access="private" returntype="void">
-		<cfset var path = expandPath(variables.configPath)>
-		<cfset var info = getFileInfo(path)>
-		<cfif dateCompare(info.lastModified, variables.configTimestamp, "s") gt 0>
-			<cfset loadConfig()>
+		<cfif variables.configPath neq "">
+			<cfset var path = expandPath(variables.configPath)>
+			<cfset var info = getFileInfo(path)>
+			<cfif dateCompare(info.lastModified, variables.configTimestamp, "s") gt 0>
+				<cfset loadConfig()>
+			</cfif>
 		</cfif>
+	</cffunction>
+
+	<cffunction name="getMemento" access="public" returntype="struct">
+		<cfreturn variables.contexts>
 	</cffunction>
 
 </cfcomponent>
