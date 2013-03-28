@@ -86,7 +86,7 @@
 					<cfset href = right(href,len(href)-1)>
 				</cfif>
 				<cfset itemHREF = replaceNoCase(itemHREFMask,"%pageName",urlEncodedFormat(href),"ALL")>
-				<cfset arrayAppend(items,{type="link",label=label,href=itemHref,active=(href eq thisPageHREF)})>
+				<cfset arrayAppend(items,{type="link",label=label,href=itemHref,active=(href eq thisPageHREF or "/" & href eq thisPageHREF)})>
 			</cfif>
 		</cfloop>
 
