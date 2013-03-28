@@ -27,7 +27,7 @@
 		</service>
 
 		<service name="routeParser" class="bricksLib.bricks.routeParser">
-			<init-param name="configPath" settingName="bricks.routesConfig" />
+			<init-param name="configPath" settingName="bricks.routes.config" />
 		</service>
 		
 		<service name="userSessionManager" class="bricksLib.bricks.simpleUserSessionManager">
@@ -35,7 +35,7 @@
 		</service>
 	
 		<!-- error reporting service 
-		<service name="bugTracker" class="bricksLib.bricks.bugLogService">
+		<service name="bugTracker" class="bricksLib.bugLogService">
 			<init-param name="bugLogListener" settingName="bugLog.emailRecipient" />
 			<init-param name="bugEmailSender" settingName="bugLog.emailSender" />
 			<init-param name="bugEmailRecipients" settingName="bugLog.listener" />
