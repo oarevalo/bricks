@@ -25,7 +25,7 @@
 								        lineNumbers: true,
 									  mode:  "text/html"
 									});
-									myCodeMirror.setSize("100%",400)
+									myCodeMirror.setSize(940,450);
 								</script> 
 							<cfelse>
 								<input type="hidden" name="_filecontenttype" value="text/plain">

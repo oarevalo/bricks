@@ -728,7 +728,7 @@
 				} else {
 					oResourceBean = hp
 									.getCatalog()
-									.getResource(resType, resourceID, true);
+									.getResource(resType, package & resourceID, true);
 				}
 
 				for(arg in form) {
@@ -769,15 +769,15 @@
 				getService("homePortals").reinit();
 
 				setMessage("info", "Resource saved");
-				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#id#");
+				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#resourceID#");
 
 			} catch(validation e) {
 				setMessage("warning", e.message);
-				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#id#");
+				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#resourceID#");
 
 			} catch(any e) {
 				setMessage("error", e.message);
-				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#id#");
+				setNextEvent("admin.resource","type=#restype#&package=#package#&id=#resourceID#");
 			}
 		</cfscript>
 	</cffunction>		

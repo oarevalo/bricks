@@ -48,7 +48,9 @@
 	titleLabel = "";
 	if(!isNew) {
 		if(rs.id neq rs.package and rs.package neq "" and rs.package neq "/")
-			titleLabel = rs.package & " / ";
+			titleLabel = rs.package;
+		if( right(rs.package,1) neq "/")
+			titleLabel = titleLabel & " / ";
 		titleLabel = titleLabel & rs.id;
 	} else {
 		titleLabel = "New #rs.type#";

@@ -22,7 +22,7 @@
 		        lineNumbers: true,
 			  mode:  "xml"
 			});
-			myCodeMirror.setSize("100%",450)
+			myCodeMirror.setSize(940,450)
 		</script> 
 	</div>
 </cfoutput>

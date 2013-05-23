@@ -26,13 +26,14 @@
 	<div style="margin-bottom:5px;">
 		<b>Path:</b> #rs.package#
 	</div>
-	
+
 	<table class="table table-striped table-bordered table-condensed table-hover" style="width:100%;">
 		<thead>
 			<tr>
 				<th style="width:30px;text-align:center;">##</th>
 				<th>Name</th>
 				<th style="width:75px;text-align:center;">Type</th>
+				<th style="width:100px;text-align:center;">Created On</th>
 				<th style="width:100px;text-align:center;">Actions</th>
 			</tr>
 		</thead>
@@ -42,6 +43,7 @@
 					<td></td>
 					<td><a href="index.cfm?event=admin.resources&package=#parentPackage#&type=#rs.type#">.. (parent)</a></td>
 					<td style="text-align:center;">Folder</td>
+					<td></td>
 					<td></td>
 				</tr>
 			</cfif>
@@ -53,6 +55,7 @@
 					<td style="text-align:center;font-weight:bold;">#index#.</td>
 					<td><a href="index.cfm?event=admin.resources&type=#rs.type#&package=#rs.packages.name#/">#thisFolder#</a></td>
 					<td style="text-align:center;">Folder</td>
+					<td style="text-align:center;"></td>
 					<td style="text-align:center;">
 						<div class="btn-group">
 							<a class="btn btn-small" href="index.cfm?event=admin.resources&type=#rs.type#&package=#rs.packages.name#/">Open</a>
@@ -74,6 +77,7 @@
 					<td style="text-align:center;font-weight:bold;">#index#.</td>
 					<td>#resource.getID()#</td>
 					<td style="text-align:center;">Resource</td>
+					<td style="text-align:center;">#(resource.getCreatedOn() neq "1/1/1800") ? dateFormat(resource.getCreatedOn(),"m/d/yyyy") : "-"#</td>
 					<td style="text-align:center;">
 						<div class="btn-group">
 							<a class="btn btn-small" href="index.cfm?event=admin.resource&id=#resource.getID()#&type=#rs.type#&package=#rs.package#">Edit</a>
