@@ -26,6 +26,7 @@
 		<cfset var showSearch = getContentTag().getAttribute("showSearch",variables.DEFAULT_SHOW_SEARCH)>
 		<cfset var searchTarget = getContentTag().getAttribute("searchTarget",variables.DEFAULT_SEARCH_TARGET)>
 		<cfset var searchParam = getContentTag().getAttribute("searchParam",variables.DEFAULT_SEARCH_PARAM)>
+		<cfset var titleImg = getContentTag().getAttribute("titleImg")>
 		<cfset var thisFolder = "/">
 		<cfset var qryPages = 0>
 		<cfset var pp = getPageRenderer().getHomePortals().getPageProvider()>
@@ -95,7 +96,9 @@
 			<cfoutput>
 				<div class="navbar #navbarClass#">
 					<div class="navbar-inner">
-						<cfif navTitle neq "">
+						<cfif titleImg neq "">
+							<a class="brand" href="#navTitleHREF#" style="margin:0px;padding:0px;padding-top:3px;"><img src="#titleImg#" alt="#navTitle#" title="#navTitle#"></a>
+						<cfelseif navTitle neq "">
 							<a class="brand" href="#navTitleHREF#">#navTitle#</a>
 						</cfif>
 						<ul class="nav">
